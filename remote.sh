@@ -3,10 +3,6 @@
 
 set -eu
 
-#while [ $(lsof "$SUB" | wc -l) -eq 0 ]; do
-#    sleep .1
-#done
-
 
 (while read -r q; do
     drv=$(echo "$q" | cut -d' ' -f3)
