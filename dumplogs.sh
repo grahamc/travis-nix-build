@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p tree -p nix -p utillinux # --pure
+#!nix-shell -i bash -p tree -p nix -p utillinux
 
 set -eu
 
