@@ -9,12 +9,17 @@ if false; then
         echo "$@" >&2
     }
 else
-    debug()  { : }
+    debug()  {
+        :
+    }
 fi
 
 drvs() {
     find /nix/var/log/nix/drvs/ -type f -name '*.drv.bz2' -print0 \
-        | (while read -d "" drv; do
+        | (while read -rd "" drv; do
+               local combined_path
+               local drvname
+               local drvpath
                combined_path=$(echo "$drv" | rev | sed -e "s#/##" | rev)
                drvname=$(basename -s ".bz2" "$combined_path")
                drvpath="/nix/store/$drvname"
@@ -22,7 +27,7 @@ drvs() {
                    debug "doesn't exist?"
                    continue
                fi
-               printf "$drvpath\0"
+               printf "%s\0" "$drvpath"
            done)
 }
 
@@ -30,20 +35,20 @@ outputs() {
     nix-store -q --outputs "$1"
 }
 
-drvs | (while read -d "" drv; do
-              worked=0
-              echo "$drvpath =>"
-              for out in $(outputs "$drvpath"); do
-                  echo " -> $out"
-                  if test -e "$out"; then
-                      worked=1
-                  fi
-              done
-              echo "log:"
-              nix-store --read-log "$drvpath" | sed -e "s/^/ --> /"
-              if [ "$worked" -eq 0 ]; then
-                  echo "Build failed :("
-              else
-                  echo "Build passed!"
-              fi
-          done)
+drvs | (while read -rd "" drvpath; do
+            worked=0
+            echo "$drvpath =>"
+            for out in $(outputs "$drvpath"); do
+                echo " -> $out"
+                if test -e "$out"; then
+                    worked=1
+                fi
+            done
+            echo "log:"
+            nix-store --read-log "$drvpath" | sed -e "s/^/ --> /"
+            if [ "$worked" -eq 0 ]; then
+                echo "Build failed :("
+            else
+                echo "Build passed!"
+            fi
+        done)
