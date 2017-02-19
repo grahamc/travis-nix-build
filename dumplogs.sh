@@ -23,20 +23,24 @@ outputs() {
 }
 
 drvs | (while read -r drvpath; do
-            worked=0
-            echo "$drvpath =>"
-            for out in $(outputs "$drvpath"); do
-                echo " -> $out"
-                if test -e "$out"; then
-                    worked=1
+            if log=$(nix-store --read-log "$drvpath"); then
+                worked=0
+                echo "$drvpath =>"
+                for out in $(outputs "$drvpath"); do
+                    echo " -> $out"
+                    if test -e "$out"; then
+                        worked=1
+                    fi
+                done
+
+                echo "log:"
+                echo "$log"
+
+                if [ "$worked" -eq 0 ]; then
+                    echo "Build failed :("
+                else
+                    echo 'Build passed!'
                 fi
-            done
-            echo "log:"
-            nix-store --read-log "$drvpath"
-            if [ "$worked" -eq 0 ]; then
-                echo "Build failed :("
-            else
-                echo 'Build passed!'
+                echo "~~~~~~~~~~~~~~~~~~~~~"
             fi
-            echo "~~~~~~~~~~~~~~~~~~~~~"
         done)
