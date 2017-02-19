@@ -48,7 +48,7 @@ drvs | (while read -r drvpath; do
 
                 starting_drv "$drvpath"
 
-                nix-store --read-log --log-type pretty "$drvpath" | cat
+                nix-store --read-log --log-type flat "$drvpath" | cat
 
                 for out in $(outputs "$drvpath"); do
                     drv_produces "$out"
