@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p tree --pure
+#!nix-shell -i bash -p tree -p nix --pure
 
 set -eux
 
