@@ -15,27 +15,14 @@ else
 fi
 
 drvs() {
-    find /nix/var/log/nix/drvs/ -type f -name '*.drv.bz2' -print0 \
-        | (while read -rd "" drv; do
-               local combined_path
-               local drvname
-               local drvpath
-               combined_path=$(echo "$drv" | rev | sed -e "s#/##" | rev)
-               drvname=$(basename -s ".bz2" "$combined_path")
-               drvpath="/nix/store/$drvname"
-               if ! test -f "$drvpath"; then
-                   debug "doesn't exist?"
-                   continue
-               fi
-               printf "%s\0" "$drvpath"
-           done)
+    nix-store -qR $(nix-instantiate ./default.nix)
 }
 
 outputs() {
     nix-store -q --outputs "$1"
 }
 
-drvs | (while read -rd "" drvpath; do
+drvs | (while read -r drvpath; do
             worked=0
             echo "$drvpath =>"
             for out in $(outputs "$drvpath"); do
