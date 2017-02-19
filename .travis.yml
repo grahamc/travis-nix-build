@@ -5,4 +5,4 @@ matrix:
           sudo: false
           script:
               - ./dobuilds.sh ./default.nix
-              - nix-shell -p tree --run "tree /nix/var/log/nix/drvs/"
+              - ./dumplogs.sh
