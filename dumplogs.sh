@@ -15,7 +15,7 @@ drvs | (while read -d "" drv; do
               drvname=$(basename -s ".bz2" "$drv")
               drvpath="/nix/store/$drvname"
               if ! test -f "$drvpath"; then
-                  # continue
+                  echo "doesn't exist?" # continue
               fi
 
               worked=0
