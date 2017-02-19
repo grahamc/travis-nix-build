@@ -23,7 +23,7 @@ outputs() {
 }
 
 drvs | (while read -r drvpath; do
-            if log=$(nix-store --read-log "$drvpath"); then
+            if log=$(nix-store --read-log "$drvpath" 2>/dev/null); then
                 worked=0
                 echo "$drvpath =>"
                 for out in $(outputs "$drvpath"); do
