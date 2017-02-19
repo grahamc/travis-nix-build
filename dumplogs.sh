@@ -1,6 +1,8 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i bash -p tree --pure
 
+set -eux
+
 drvs() {
     find /nix/var/log/nix/drvs/ -type f -name '*.drv.bz2' -print0
 }
