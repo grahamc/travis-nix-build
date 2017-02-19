@@ -49,7 +49,7 @@ drvs | (while read -rd "" drvpath; do
             if [ "$worked" -eq 0 ]; then
                 echo "Build failed :("
             else
-                echo "Build passed!"
+                echo 'Build passed!'
             fi
             echo "~~~~~~~~~~~~~~~~~~~~~"
         done)
