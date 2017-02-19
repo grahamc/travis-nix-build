@@ -14,6 +14,26 @@ else
     }
 fi
 
+if true; then
+    starting_drv() {
+        echo -e "\e[0;49;95m💞: $1 \e[0m"
+    }
+
+    drv_produces() {
+        echo "➡️️ $out"
+    }
+
+    build_passed() {
+        echo -e "    \e[7;49;92m😍  We did it! 🍻 \e[0m";
+    }
+
+    build_failed() {
+        echo -e "    \e[7;49;91m💔  Bummer :( \e[0m";
+    }
+else
+:
+fi
+
 drvs() {
     nix-store -qR $(nix-instantiate ./default.nix)
 }
@@ -23,24 +43,27 @@ outputs() {
 }
 
 drvs | (while read -r drvpath; do
-            if log=$(nix-store --read-log "$drvpath" 2>/dev/null); then
+            if nix-store --read-log "$drvpath" 2>/dev/null 1>&2; then
                 worked=0
-                echo "$drvpath =>"
+
+                starting_drv "$drvpath"
+
+                nix-store --read-log --log-type pretty "$drvpath" | cat
+
                 for out in $(outputs "$drvpath"); do
-                    echo " -> $out"
+                    drv_produces "$out"
+
                     if test -e "$out"; then
                         worked=1
                     fi
                 done
 
-                echo "log:"
-                echo "$log"
+
 
                 if [ "$worked" -eq 0 ]; then
-                    echo "Build failed :("
+                    build_failed
                 else
-                    echo 'Build passed!'
+                    build_passed
                 fi
-                echo "~~~~~~~~~~~~~~~~~~~~~"
             fi
         done)
