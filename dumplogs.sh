@@ -9,7 +9,7 @@ if false; then
         echo "$@" >&2
     }
 else
-    debug()  {}
+    debug()  { : }
 fi
 
 drvs() {
