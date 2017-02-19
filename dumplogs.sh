@@ -45,10 +45,11 @@ drvs | (while read -rd "" drvpath; do
                 fi
             done
             echo "log:"
-            nix-store --read-log "$drvpath" | sed -e "s/^/ --> /"
+            nix-store --read-log "$drvpath"
             if [ "$worked" -eq 0 ]; then
                 echo "Build failed :("
             else
                 echo "Build passed!"
             fi
+            echo "~~~~~~~~~~~~~~~~~~~~~"
         done)
