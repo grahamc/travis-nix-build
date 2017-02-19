@@ -1,7 +1,16 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i bash -p tree -p nix -p utillinux --pure
 
-set -eux
+set -eu
+
+if false; then
+    set -x
+    debug() {
+        echo "$@" >&2
+    }
+else
+    debug()  {}
+fi
 
 drvs() {
     find /nix/var/log/nix/drvs/ -type f -name '*.drv.bz2' -print0 \
@@ -10,7 +19,7 @@ drvs() {
                drvname=$(basename -s ".bz2" "$combined_path")
                drvpath="/nix/store/$drvname"
                if ! test -f "$drvpath"; then
-                   echo "doesn't exist?" >&2 # continue
+                   debug "doesn't exist?"
                    continue
                fi
                printf "$drvpath\0"
@@ -22,12 +31,6 @@ outputs() {
 }
 
 drvs | (while read -d "" drv; do
-              drvname=$(basename -s ".bz2" "$drv")
-              drvpath="/nix/store/$drvname"
-              if ! test -f "$drvpath"; then
-                  echo "doesn't exist?" # continue
-              fi
-
               worked=0
               echo "$drvpath =>"
               for out in $(outputs "$drvpath"); do
