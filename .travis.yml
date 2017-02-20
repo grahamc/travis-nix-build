@@ -4,5 +4,5 @@ matrix:
         - os: linux
           sudo: false
           script:
-              - ./dobuilds.sh ./default.nix
+              - ./dobuilds.sh ./default.nix > /dev/null 2>&1
               - ./dumplogs.sh
