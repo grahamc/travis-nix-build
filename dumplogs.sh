@@ -48,7 +48,9 @@ drvs | (while read -r drvpath; do
 
                 starting_drv "$drvpath"
 
-                nix-store --log-type flat --read-log  "$drvpath" | perl -pe 's/\x{1b}\[.*?[a-zA-Z]//g'
+                nix-store --log-type flat --read-log  "$drvpath" \
+                    | perl -pe 's/\x{1b}\[.*?[a-zA-Z]//g' \
+                    | sed -e "s/^/    /"
                 for out in $(outputs "$drvpath"); do
                     drv_produces "$out"
 
